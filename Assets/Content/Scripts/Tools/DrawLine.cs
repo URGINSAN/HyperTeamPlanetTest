@@ -57,7 +57,7 @@ public class DrawLine : MonoBehaviour
         }
     }
 
-    void OnEndDrawLine()
+    public void OnEndDrawLine()
     {
         Player.Move(LinePoses);
     }
@@ -75,7 +75,7 @@ public class DrawLine : MonoBehaviour
         Line.SetPosition(t, WorldPosition);
         LinePoses.Add(WorldPosition);
 
-        print(WorldPosition);
+        //print(WorldPosition);
     }
 
     Vector3 TapPos()

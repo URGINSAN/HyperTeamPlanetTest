@@ -13,20 +13,35 @@ public class Player : MonoBehaviour
     Coroutine MoveIE;
     public bool CanFinish;
 
-    private void Update()
+    public void StopMove()
     {
-        if (CanMove)
-        {
-
-        }
+        StopAllCoroutines();
     }
 
     public void Move(List<Vector3> poses)
     {
+        if (poses.Count > 0)
+            transform.position = poses[0];
         MovePoses = poses;
-        CanMove = true;
+
         Anim.PlayAnim("move");
         StartCoroutine(MoveObject());
+
+        SceneController.instance.OnStartMove();
+    }
+
+    public void Replay()
+    {
+        StopMove();
+
+        if (MovePoses.Count > 0)
+        {
+            print("replay");
+            transform.position = MovePoses[0];
+
+            Anim.PlayAnim("move");
+            StartCoroutine(MoveObject());
+        }
     }
 
     IEnumerator MoveObject()
@@ -77,6 +92,31 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.Equals(FinishZone))
+        {
+            SceneController.instance.FinishedPlayers--;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag.Equals("Player"))
+        {
+            collision.gameObject.GetComponent<Player>().OnFall();
+            OnFall();
+        }
+    }
+
+    public void OnFall()
+    {
+        Anim.PlayAnim("fall");
+        StopMove();
+        CanFinish = false;
+        SceneController.instance.OnLose();
+    }
+
     void OnEndMove()
     {
         Anim.PlayAnim("idle");
@@ -85,9 +125,9 @@ public class Player : MonoBehaviour
 
     void OnFinish()
     {
+        SceneController.instance.OnLevelFinish(this);
+
         Anim.PlayAnim("dance");
         CanFinish = false;
-
-        SceneController.instance.OnLevelFinish();
     }
 }

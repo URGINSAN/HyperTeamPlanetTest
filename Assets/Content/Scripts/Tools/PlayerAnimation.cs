@@ -25,6 +25,9 @@ public class PlayerAnimation : MonoBehaviour
             case "dance":
                 Anim.Play("Dance");
                 break;
+            case "fall":
+                Anim.Play("Fall");
+                break;
         }
     }
 }
