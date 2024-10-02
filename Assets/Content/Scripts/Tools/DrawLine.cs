@@ -8,22 +8,58 @@ public class DrawLine : MonoBehaviour
     public Vector3 WorldPosition;
     public float MouseDelta = 5;
     public bool Pressed;
+    public bool CanDrawLine = false;
+    private bool CanTapPlayer = true;
     [Space]
-    public LineRenderer Line0;
+    public Player Player;
+    public LineRenderer Line;
+    public List<Vector3> LinePoses;
 
     private void Update()
     {
-        Pressed = Input.GetMouseButton(0);
-
-        if (Pressed)
+        if (!CanDrawLine && CanTapPlayer)
         {
-            WorldPosition = TapPos();// Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Vector2.Distance(PrevMousePos, WorldPosition) > MouseDelta)
+            if (Physics.Raycast(ray, out hit))
             {
-                Get3dMousePoint();
+                if (hit.transform.gameObject.Equals(Player.gameObject))
+                {
+                    CanDrawLine = true;
+                    CanTapPlayer = false;
+                }
             }
         }
+
+        if (CanDrawLine)
+        {
+            Pressed = Input.GetMouseButton(0);
+
+            if (Pressed)
+            {
+                WorldPosition = TapPos();// Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
+
+                if (Vector2.Distance(PrevMousePos, WorldPosition) > MouseDelta)
+                {
+                    Get3dMousePoint();
+                }
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (CanDrawLine)
+                {
+                    OnEndDrawLine();
+                }
+                CanDrawLine = false;
+            }
+        }
+    }
+
+    void OnEndDrawLine()
+    {
+        Player.Move(LinePoses);
     }
 
     void Get3dMousePoint()
@@ -34,9 +70,10 @@ public class DrawLine : MonoBehaviour
         if (WorldPosition == Vector3.zero)
             return;
 
-        Line0.positionCount++;
-        int t = Line0.positionCount - 1;
-        Line0.SetPosition(t, WorldPosition);
+        Line.positionCount++;
+        int t = Line.positionCount - 1;
+        Line.SetPosition(t, WorldPosition);
+        LinePoses.Add(WorldPosition);
 
         print(WorldPosition);
     }
