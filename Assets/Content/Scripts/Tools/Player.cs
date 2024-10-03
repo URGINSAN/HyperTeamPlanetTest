@@ -69,7 +69,7 @@ public class Player : MonoBehaviour
             Quaternion rot = Quaternion.LookRotation(lookVector);
             rot.x = 0;
             rot.z = 0;
-            transform.rotation = Quaternion.Slerp(transform.rotation, rot, 5 * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, 15 * Time.deltaTime);
 
             yield return null;
         }

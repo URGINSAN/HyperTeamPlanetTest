@@ -30,7 +30,7 @@ public class SceneController : MonoBehaviour
         Points = PlayerPrefs.GetInt("Poins");
         Coins = PlayerPrefs.GetInt("Coins");
 
-        Application.targetFrameRate = -1;
+        Application.targetFrameRate = 60;
         OpenLevel(Level);
     }
 

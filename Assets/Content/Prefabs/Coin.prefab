@@ -64,7 +64,7 @@ MonoBehaviour:
   xForceDirection: 0
   yForceDirection: 1
   zForceDirection: 0
-  speedMultiplier: 1
+  speedMultiplier: 5
   worldPivote: 0
 --- !u!114 &4304545160515625293
 MonoBehaviour:
